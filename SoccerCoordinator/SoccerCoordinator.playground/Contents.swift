@@ -21,7 +21,7 @@ import Foundation
  guardianNames: Array of the name(s) of the player's guardian(s) as String(s)
  Returns Soccer Player as NSDictionary in format specified by Model for Soccer Players below
  */
-func buildSoccerPlayer(playerName: String, heightInInches: Int, hasSoccerExperience: Bool, guardianNames: [String]) -> NSDictionary {
+func buildSoccerPlayer(playerName: String, heightInInches: Int, hasSoccerExperience: Bool, guardianNames: [String]) -> [String:AnyObject] {
     return [
         "playerName": playerName,
         "heightInInches": heightInInches,
@@ -39,7 +39,11 @@ func buildSoccerPlayer(playerName: String, heightInInches: Int, hasSoccerExperie
         "hasSoccerExperience": Bool
         "guardianNames": [String]
 */
-// Build Soccer Players Model
+/*
+ MORE ADVANCED TOOLS:
+    - Instead of using NSDictionary, creating a struct for SoccerPlayer with the properties being the keys for the NSDictionary model would be better
+    - Rather than typing in all the data from SoccerPlayerInfo, it would be better to read the file into the playground, extract the data from that file, and building a SoccerPlayer array from that data
+*/
 var soccerPlayers = [
     buildSoccerPlayer("Joe Smith", heightInInches: 42, hasSoccerExperience: true, guardianNames: ["Jim Smith", "Jan Smith"]),
     buildSoccerPlayer("Jill Tanner", heightInInches: 36, hasSoccerExperience: true, guardianNames: ["Clara Tanner"]),
@@ -61,13 +65,43 @@ var soccerPlayers = [
     buildSoccerPlayer("Herschel Krustofski", heightInInches: 45, hasSoccerExperience: true, guardianNames: ["Hyman Krustofski", "Rachel Krustofski"])
 ]
 
+//--------------------------------------------------
+//----------------SOCCER TEAMS MODEL----------------
+//--------------------------------------------------
 
+/*
+ SORTING SOCCER PLAYERS INTO TEAMS:
+    - Each team has the same number of players
+    - Each team has the same number of experienced players
+    - Each team has an average height within 1.5 inches of the average heights of the other teams
+*/
 
+// Each team is an array of Soccer Players from the Soccer Players Model
+var Sharks = []
+var Dragons = []
+var Raptors = []
 
+// Before creating teams, split Soccer Players into experienced and unexperienced arrays
+// Use Quick Sort to sort arrays by Soccer Player heightInInches in ascending order
+var sortedInexperiencedPlayers: [[String:AnyObject]] = []
+var sortedExperiencedPlayers:[[String:AnyObject]] = []
 
-
-
-
-
+// FIXME: CAN'T USE AS KEYWORD! CAN'T USE OPTIONAL FORCE UNWRAP!
+for soccerPlayer in soccerPlayers {
+    let heightKey = "heightInInches"
+    if soccerPlayer["hasSoccerExperience"] as! Bool {
+        var index = 0
+        while index < sortedExperiencedPlayers.count && (soccerPlayer[heightKey] as! Int) > (sortedExperiencedPlayers[index][heightKey] as! Int) {
+            index += 1
+        }
+        sortedExperiencedPlayers.insert(soccerPlayer, atIndex: index)
+    } else {
+        var index = 0
+        while index < sortedInexperiencedPlayers.count && (soccerPlayer[heightKey] as! Int) > (sortedInexperiencedPlayers[index][heightKey] as! Int) {
+            index += 1
+        }
+        sortedInexperiencedPlayers.insert(soccerPlayer, atIndex: index)
+    }
+}
 
 
