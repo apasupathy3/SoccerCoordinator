@@ -245,6 +245,14 @@ appendPlayerToTeams(fromArray: sortedInexperiencedPlayers)
 //------------------LETTERS MODEL-------------------
 //--------------------------------------------------
 
+/*
+ Parameters:
+    player: Soccer Player to whose guardian(s) the letter is being sent
+    team: Name of Soccer Player's team in String format
+ Prints a letter for the guardian(s) of the Soccer Player in question to the console
+    Letter includes player name, team name, guardian names, and date/time of first practice
+    Letter also includes player height in inches, and indicates whether the player has prior experience
+*/
 func sendLetter(toPlayer player: [String:String], fromTeam team: String) {
     if let guardianNames = player["guardianNames"],
        let playerName = player["playerName"],
@@ -259,20 +267,22 @@ func sendLetter(toPlayer player: [String:String], fromTeam team: String) {
         }
         
         let experienceResponse = hasSoccerExperience == "YES" ?
-            "This feat is particularly impressive for your child, who appears to be vertically challenged with a mere \(heightInInches) inches in height to their name. However, your child's level of experience no doubt placed them a cut above the rest of their teammates!\n\n" :
-            "We can't help but note your child's obvious lack of experience. They often attempted to pick up the ball with their hands, and nearly kicked their teammate in the head due to their wild inaccuracy when it comes to kicking. However, their height of \(heightInInches) inches is an incredibly ideal height for a soccer player, particularly at their age. Because of this, your child managed to make the cut!\n\n"
+            "This feat is particularly impressive for \(playerName), who appears to be vertically challenged with a mere \(heightInInches) inches in height to their name. However, \(playerName)'s level of experience no doubt placed them a cut above the rest of their teammates!\n\n" :
+            "We can't help but note \(playerName)'s obvious lack of experience. They often attempted to pick up the ball with their hands, and nearly kicked their teammate in the head due to their wild inaccuracy when it comes to kicking. However, their height of \(heightInInches) inches is an incredibly ideal height for a soccer player, particularly at their age. Because of this, \(playerName) managed to make the cut!\n\n"
         
         var script = "DOCUMENT DATED: 20 MAR 2016\n\n"
         script += "Hello, \(guardianNames)!\n\n"
         script += "We are proud to say that your child, \(playerName), has managed to earn a place among the \(team)!\n\n"
         script += experienceResponse
-        script += "We do have a strict attendance policy. Your child must attend every practice, and arrive at least 20 minutes early to every practice. If they don't, they will be kicked off the team and their former teammates will be forced to shun them until the end of time. There can be no exceptions without notice at least a Gallifreyan year in advance. Please do not put your child or their teammates through such an ordeal. Your child's first practice is \(practiceTime). Don't be late. No one will like it if you are late.\n\n"
-        script += "We look forward to seeing your child 20 minutes before practice, every single practice!\n\n"
-        script += "Thank you for signing your child up for Soccer Practice from Hell. We hope you have a pleasant day!"
+        script += "We do have a strict attendance policy. \(playerName) must attend every practice, and arrive at least 20 minutes early to every practice. If they don't, they will be kicked off the team and their former teammates will be forced to shun them until the end of time. There can be no exceptions without notice at least a Neptunian year in advance. Please do not put \(playerName) or their teammates through such an ordeal. \(playerName)'s first practice is \(practiceTime). Don't be late. No one will like it if \(playerName) is late.\n\n"
+        script += "We look forward to seeing \(playerName) 20 minutes before practice, every single practice!\n\n"
+        script += "Thank you for signing \(playerName) up for Soccer Practice from Hell. We hope you and your child have a pleasant day!\n\n"
+        script += "P.S.\nIf you've received this letter, \(guardianNames), you know that we know where you live. We also know that \(playerName) did not attend practice 20 minutes before \(practiceTime). We now have no choice but to shun \(playerName) until eternity itself winds to a stop. We told you to attend. We told you not to be late. Now no one is happy, and it is entirely your fault, \(guardianNames). We hope you and \(playerName) are satisfied with your poor decision."
         print(script)
     }
 }
 
+// Prints letters for all Soccer Players to console
 print("LETTERS TO THE SHARKS\n--------------------------------------------------------")
 for shark in sharks {
     print("\n-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n")
