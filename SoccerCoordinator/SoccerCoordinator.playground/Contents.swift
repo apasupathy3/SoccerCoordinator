@@ -15,10 +15,10 @@ import Foundation
 
 /*
  Parameters: values required to build a Soccer Player element
- playerName: The name of the soccer player as a String
- heightInInches: The height of the soccer player in inches as the String of an Int
- hasSoccerExperience: String "YES" or "NO" indicating whether or not player has previous soccer experience
- guardianNames: The name(s) of the player's guardian(s) as a String
+    playerName: The name of the soccer player as a String
+    heightInInches: The height of the soccer player in inches as the String of an Int
+    hasSoccerExperience: String "YES" or "NO" indicating whether or not player has previous soccer experience
+    guardianNames: The name(s) of the player's guardian(s) as a String
  Returns Soccer Player as [String:String] in format specified by Model for Soccer Players below
  */
 func buildSoccerPlayer(playerName: String, heightInInches: String, hasSoccerExperience: String, guardianNames: String) -> [String:String] {
@@ -107,51 +107,41 @@ var sortedExperiencedPlayers:[[String:String]] = []
     - Using a struct instead of a Dictionary would be even more useful because we wouldn't
         have to deal with unwrapping Optionals of values we know for sure exist
 */
-for soccerPlayer in soccerPlayers {
-    if soccerPlayer["hasSoccerExperience"] == "YES" {
-        var insertPlayer = false
-        var index = 0
-        repeat {
-            if sortedExperiencedPlayers.isEmpty {
-                insertPlayer = true
-            } else {
-                if let experiencedPlayerHeight = sortedExperiencedPlayers[index]["heightInInches"],
-                   let experiencedPlayerHeightInt = Int(experiencedPlayerHeight),
-                   let soccerPlayerHeight = soccerPlayer["heightInInches"],
-                   let soccerPlayerHeightInt = Int(soccerPlayerHeight) {
-                    if soccerPlayerHeightInt <= experiencedPlayerHeightInt {
-                        insertPlayer = true
-                    } else {
-                        index += 1
-                    }
+/*
+ Parameters:
+    player: Soccer Player to be inserted into sorted array
+    array: Array of Soccer Players sorted by height
+ Returns index at which player should be inserted into array
+*/
+func indexToInsertPlayer(player: [String:String], forSortedArray array: [[String:String]]) -> Int {
+    var insertPlayer = false
+    var index = 0
+    repeat {
+        if array.isEmpty {
+            insertPlayer = true
+        } else {
+            if let experiencedPlayerHeight = array[index]["heightInInches"],
+                let experiencedPlayerHeightInt = Int(experiencedPlayerHeight),
+                let soccerPlayerHeight = player["heightInInches"],
+                let soccerPlayerHeightInt = Int(soccerPlayerHeight) {
+                if soccerPlayerHeightInt <= experiencedPlayerHeightInt {
+                    insertPlayer = true
+                } else {
+                    index += 1
                 }
             }
-        } while index < sortedExperiencedPlayers.count && !insertPlayer
-        sortedExperiencedPlayers.insert(soccerPlayer, atIndex: index)
-    } else {
-        var insertPlayer = false
-        var index = 0
-        repeat {
-            if sortedInexperiencedPlayers.isEmpty {
-                insertPlayer = true
-            } else {
-                if let inexperiencedPlayerHeight = sortedInexperiencedPlayers[index]["heightInInches"],
-                    let inexperiencedPlayerHeightInt = Int(inexperiencedPlayerHeight),
-                    let soccerPlayerHeight = soccerPlayer["heightInInches"],
-                    let soccerPlayerHeightInt = Int(soccerPlayerHeight) {
-                    if soccerPlayerHeightInt <= inexperiencedPlayerHeightInt {
-                        insertPlayer = true
-                    } else {
-                        index += 1
-                    }
-                }
-            }
-        } while index < sortedInexperiencedPlayers.count && !insertPlayer
-        sortedInexperiencedPlayers.insert(soccerPlayer, atIndex: index)
-    }
+        }
+    } while index < array.count && !insertPlayer
+    return index
 }
 
-
+for soccerPlayer in soccerPlayers {
+    if soccerPlayer["hasSoccerExperience"] == "YES" {
+        sortedExperiencedPlayers.insert(soccerPlayer, atIndex: indexToInsertPlayer(soccerPlayer, forSortedArray: sortedExperiencedPlayers))
+    } else {
+        sortedInexperiencedPlayers.insert(soccerPlayer, atIndex: indexToInsertPlayer(soccerPlayer, forSortedArray: sortedInexperiencedPlayers))
+    }
+}
 
 
 
