@@ -83,11 +83,6 @@ var soccerPlayers = [
     - Each team has an average height within 1.5 inches of the average heights of the other teams
 */
 
-// Each team is an array of Soccer Players from the Soccer Players Model
-var sharks = []
-var dragons = []
-var raptors = []
-
 // Before creating teams, split Soccer Players into experienced and unexperienced arrays
 // Use Quick Sort to sort arrays by Soccer Player heightInInches in ascending order
 var sortedInexperiencedPlayers: [[String:String]] = []
@@ -104,8 +99,12 @@ var sortedExperiencedPlayers:[[String:String]] = []
  MORE ADVANCED TOOLS:
     - Given we're using a [String:String] type for soccerPlayer, the as keyword would be
         useful for shortening up those stacked if-lets
-    - Using a struct instead of a Dictionary would be even more useful because we wouldn't
-        have to deal with unwrapping Optionals of values we know for sure exist
+    - Using a custom Comparable type (struct or class) for Soccer Player where experience,
+        and then height, determines their sort order instead of a Dictionary would be even
+        more useful:
+            * Wouldn't have to deal with unwrapping Optionals of values we know for sure exist
+            * Could simply call sort() on the array of Soccer Players to sort by experience
+                and height
 */
 /*
  Parameters:
@@ -142,6 +141,134 @@ for soccerPlayer in soccerPlayers {
         sortedInexperiencedPlayers.insert(soccerPlayer, atIndex: indexToInsertPlayer(soccerPlayer, forSortedArray: sortedInexperiencedPlayers))
     }
 }
+
+// Each team is an array of Soccer Players from the Soccer Players Model
+var sharks:[[String:String]] = []
+var dragons:[[String:String]] = []
+var raptors:[[String:String]] = []
+
+/*
+ SORT EXPERIENCED PLAYERS INTO TEAMS BY HEIGHT
+    - GOALS:
+        1. Evenly divide experienced players among Sharks, Dragons, and Raptors
+        2. Make the average heights of each team as close to each other as possible given above constraint
+    - METHODOLOGY:
+        Experienced players have already been sorted by height in ascending order. Thus, for every consecutive
+        three players, player_n["heightInInches"] <= player_n+1["heightInInches"] <= player_n+2["heightInInches"].
+        The total number of experienced players is divisible by 3, so each team should get the same number of
+        experienced players.
+ 
+        I am going to consider a single iteration to be when three players in a row have been placed on a team.
+        With every iteration, each team has a single player placed on its team. The order in which the three teams
+        receive a player is determined by their average heights after the previous iteration is complete. The team
+        with the largest average receives the first player because that player has the smallest height of all the
+        players in this iteration. Likewise, the team with the second-largest average receives the second player,
+        and the team with the smallest average receives the last player (the player with the largest height).
+ 
+        For this particular algorithm, when two or more teams have the same average, the following conditions are used:
+            - Raptors have priority over Dragons and Sharks
+            - Dragons have priority over Sharks
+        These conditions should not influence the effectiveness of the algorithm.
+ */
+
+/*
+ Parameter: Soccer Team Array
+ Returns average height of team, or 0 if team is empty
+ */
+func averageHeight(forTeam team: [[String:String]]) -> Double {
+    var totalHeight:Double = 0
+    if team.isEmpty {
+        return totalHeight
+    }
+    for player in team {
+        if let playerHeight = player["heightInInches"],
+            let playerHeightDouble = Double(playerHeight) {
+            totalHeight += playerHeightDouble
+        }
+    }
+    return totalHeight / Double(team.count)
+}
+
+/*
+ NOTE: The sorting method below works for a small number of teams, but it requires switching on
+    a tuple with n*(n-1)/2 Bool values for n! cases and a default to deal with the cases that
+    can't occur, where n is the number of teams. That gets large pretty quickly as n increases,
+    so a different sorting method should be implemented for a large number of teams.
+*/
+/*
+ MORE ADVANCED TOOLS:
+    - An enum for the team names would be useful for populating the orderByHeightDesc Array
+    - Tools to implement a sort method for the teams:
+        * Creating a custom Comparable type for Soccer Team where number of experienced players,
+            and then average height, determines their sort order
+        * Recursion (if I want to make my own sort function)
+*/
+var iteration = 0
+var orderByHeightDesc: [String] = []
+for player in sortedExperiencedPlayers {
+    if iteration == 0 {
+        let sharksGreaterDragons = averageHeight(forTeam: sharks) > averageHeight(forTeam: dragons)
+        let sharksGreaterRaptors = averageHeight(forTeam: sharks) > averageHeight(forTeam: raptors)
+        let dragonsGreaterRaptors = averageHeight(forTeam: dragons) > averageHeight(forTeam: raptors)
+        switch (sharksGreaterDragons, sharksGreaterRaptors, dragonsGreaterRaptors) {
+            case (false, false, false): orderByHeightDesc = ["raptors", "dragons", "sharks"]
+            case (false, false, true): orderByHeightDesc = ["dragons", "raptors", "sharks"]
+            case (false, true, true): orderByHeightDesc = ["dragons", "sharks", "raptors"]
+            case (true, false, false): orderByHeightDesc = ["raptors", "sharks", "dragons"]
+            case (true, true, false): orderByHeightDesc = ["sharks", "raptors", "dragons"]
+            case (true, true, true): orderByHeightDesc = ["sharks", "dragons", "raptors"]
+            default: break
+        }
+    }
+    
+    switch orderByHeightDesc[iteration] {
+        case "sharks": sharks.append(player)
+        case "dragons": dragons.append(player)
+        case "raptors": raptors.append(player)
+        default: break
+    }
+    iteration = (iteration + 1) % orderByHeightDesc.count
+}
+
+
+
+print("Sharks Players:")
+for shark in sharks {
+    print(shark)
+}
+print("Average height: \(averageHeight(forTeam: sharks))")
+print()
+print("Dragons Players:")
+for dragon in dragons {
+    print(dragon)
+}
+print("Average height: \(averageHeight(forTeam: dragons))")
+print()
+print("Raptors Players:")
+for raptor in raptors {
+    print(raptor)
+}
+print("Average height: \(averageHeight(forTeam: raptors))")
+print()
+print("Experienced Players:")
+for player in sortedExperiencedPlayers {
+    print(player)
+}
+print("Average height for experienced: \(averageHeight(forTeam: sortedExperiencedPlayers))")
+print("Average height for inexperienced: \(averageHeight(forTeam: sortedInexperiencedPlayers))")
+print("Average height for all players: \(averageHeight(forTeam: soccerPlayers))")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
