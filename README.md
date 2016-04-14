@@ -16,6 +16,6 @@ TASK 3:
     
 MAJOR CONSTRAINTS:
   Could only use skills covered in the following Team Treehouse videos:
-    - 
-    - 
-    - 
+    - Swift 2.0 Basics
+    - Swift 2.0 Collections and Control Flow
+    - Swift 2.0 Functions
