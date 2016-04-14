@@ -241,36 +241,55 @@ func appendPlayerToTeams(fromArray array: [[String:String]]) {
 appendPlayerToTeams(fromArray: sortedExperiencedPlayers)
 appendPlayerToTeams(fromArray: sortedInexperiencedPlayers)
 
-print("Sharks Players:")
+//--------------------------------------------------
+//------------------LETTERS MODEL-------------------
+//--------------------------------------------------
+
+func sendLetter(toPlayer player: [String:String], fromTeam team: String) {
+    if let guardianNames = player["guardianNames"],
+       let playerName = player["playerName"],
+       let hasSoccerExperience = player["hasSoccerExperience"],
+       let heightInInches = player["heightInInches"] {
+        var practiceTime = ""
+        switch team {
+            case "Sharks": practiceTime = "March 17 at 3:00 PM"
+            case "Dragons": practiceTime = "March 17 at 1:00 PM"
+            case "Raptors": practiceTime = "March 18 at 1:00 PM"
+            default: practiceTime = "unknown"
+        }
+        
+        let experienceResponse = hasSoccerExperience == "YES" ?
+            "This feat is particularly impressive for your child, who appears to be vertically challenged with a mere \(heightInInches) inches in height to their name. However, your child's level of experience no doubt placed them a cut above the rest of their teammates!\n\n" :
+            "We can't help but note your child's obvious lack of experience. They often attempted to pick up the ball with their hands, and nearly kicked their teammate in the head due to their wild inaccuracy when it comes to kicking. However, their height of \(heightInInches) inches is an incredibly ideal height for a soccer player, particularly at their age. Because of this, your child managed to make the cut!\n\n"
+        
+        var script = "DOCUMENT DATED: 20 MAR 2016\n\n"
+        script += "Hello, \(guardianNames)!\n\n"
+        script += "We are proud to say that your child, \(playerName), has managed to earn a place among the \(team)!\n\n"
+        script += experienceResponse
+        script += "We do have a strict attendance policy. Your child must attend every practice, and arrive at least 20 minutes early to every practice. If they don't, they will be kicked off the team and their former teammates will be forced to shun them until the end of time. There can be no exceptions without notice at least a Gallifreyan year in advance. Please do not put your child or their teammates through such an ordeal. Your child's first practice is \(practiceTime). Don't be late. No one will like it if you are late.\n\n"
+        script += "We look forward to seeing your child 20 minutes before practice, every single practice!\n\n"
+        script += "Thank you for signing your child up for Soccer Practice from Hell. We hope you have a pleasant day!"
+        print(script)
+    }
+}
+
+print("LETTERS TO THE SHARKS\n--------------------------------------------------------")
 for shark in sharks {
-    print(shark)
+    print("\n-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n")
+    sendLetter(toPlayer: shark, fromTeam: "Sharks")
 }
-print("Average height: \(averageHeight(forTeam: sharks))")
-print()
-print("Dragons Players:")
+print("\n--------------------------------------------------------\n")
+print("LETTERS TO THE DRAGONS\n--------------------------------------------------------")
 for dragon in dragons {
-    print(dragon)
+    print("\n-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n")
+    sendLetter(toPlayer: dragon, fromTeam: "Dragons")
 }
-print("Average height: \(averageHeight(forTeam: dragons))")
-print()
-print("Raptors Players:")
+print("\n--------------------------------------------------------\n")
+print("LETTERS TO THE RAPTORS\n--------------------------------------------------------")
 for raptor in raptors {
-    print(raptor)
+    print("\n-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n")
+    sendLetter(toPlayer: raptor, fromTeam: "Raptors")
 }
-print("Average height: \(averageHeight(forTeam: raptors))")
-print()
-print("Average height for experienced: \(averageHeight(forTeam: sortedExperiencedPlayers))")
-print("Average height for inexperienced: \(averageHeight(forTeam: sortedInexperiencedPlayers))")
-print("Average height for all players: \(averageHeight(forTeam: soccerPlayers))")
-
-
-
-
-
-
-
-
-
 
 
 
