@@ -190,12 +190,6 @@ func averageHeight(forTeam team: [[String:String]]) -> Double {
 }
 
 /*
- NOTE: The sorting method below works for a small number of teams, but it requires switching on
-    a tuple with n*(n-1)/2 Bool values for n! cases and a default to deal with the cases that
-    can't occur, where n is the number of teams. That gets large pretty quickly as n increases,
-    so a different sorting method should be implemented for a large number of teams.
-*/
-/*
  MORE ADVANCED TOOLS:
     - An enum for the team names would be useful for populating the orderByHeightDesc Array
     - Tools to implement a sort method for the teams:
@@ -203,34 +197,49 @@ func averageHeight(forTeam team: [[String:String]]) -> Double {
             and then average height, determines their sort order
         * Recursion (if I want to make my own sort function)
 */
-var iteration = 0
-var orderByHeightDesc: [String] = []
-for player in sortedExperiencedPlayers {
-    if iteration == 0 {
-        let sharksGreaterDragons = averageHeight(forTeam: sharks) > averageHeight(forTeam: dragons)
-        let sharksGreaterRaptors = averageHeight(forTeam: sharks) > averageHeight(forTeam: raptors)
-        let dragonsGreaterRaptors = averageHeight(forTeam: dragons) > averageHeight(forTeam: raptors)
-        switch (sharksGreaterDragons, sharksGreaterRaptors, dragonsGreaterRaptors) {
-            case (false, false, false): orderByHeightDesc = ["raptors", "dragons", "sharks"]
-            case (false, false, true): orderByHeightDesc = ["dragons", "raptors", "sharks"]
-            case (false, true, true): orderByHeightDesc = ["dragons", "sharks", "raptors"]
-            case (true, false, false): orderByHeightDesc = ["raptors", "sharks", "dragons"]
-            case (true, true, false): orderByHeightDesc = ["sharks", "raptors", "dragons"]
-            case (true, true, true): orderByHeightDesc = ["sharks", "dragons", "raptors"]
+/*
+ NOTE: The sorting method below works for a small number of teams, but it requires switching on
+ a tuple with n*(n-1)/2 Bool values for n! cases and a default to deal with the cases that
+ can't occur, where n is the number of teams. That gets large pretty quickly as n increases,
+ so a different sorting method should be implemented for a large number of teams.
+ */
+/*
+ Parameter: array: Array of Soccer Players
+ Sorts Soccer Players from array into every team, evenly distributing the number of players for 
+    each team and keeping the average height of each team as close to one another as possible
+*/
+func appendPlayerToTeams(fromArray array: [[String:String]]) {
+    var subIteration = 0
+    var orderByHeightDesc: [String] = []
+    for player in array {
+        if subIteration == 0 {
+            let sharksGreaterDragons = averageHeight(forTeam: sharks) > averageHeight(forTeam: dragons)
+            let sharksGreaterRaptors = averageHeight(forTeam: sharks) > averageHeight(forTeam: raptors)
+            let dragonsGreaterRaptors = averageHeight(forTeam: dragons) > averageHeight(forTeam: raptors)
+            
+            switch (sharksGreaterDragons, sharksGreaterRaptors, dragonsGreaterRaptors) {
+                case (false, false, false): orderByHeightDesc = ["raptors", "dragons", "sharks"]
+                case (false, false, true): orderByHeightDesc = ["dragons", "raptors", "sharks"]
+                case (false, true, true): orderByHeightDesc = ["dragons", "sharks", "raptors"]
+                case (true, false, false): orderByHeightDesc = ["raptors", "sharks", "dragons"]
+                case (true, true, false): orderByHeightDesc = ["sharks", "raptors", "dragons"]
+                case (true, true, true): orderByHeightDesc = ["sharks", "dragons", "raptors"]
+                default: break
+            }
+        }
+        
+        switch orderByHeightDesc[subIteration] {
+            case "sharks": sharks.append(player)
+            case "dragons": dragons.append(player)
+            case "raptors": raptors.append(player)
             default: break
         }
+        subIteration = (subIteration + 1) % orderByHeightDesc.count
     }
-    
-    switch orderByHeightDesc[iteration] {
-        case "sharks": sharks.append(player)
-        case "dragons": dragons.append(player)
-        case "raptors": raptors.append(player)
-        default: break
-    }
-    iteration = (iteration + 1) % orderByHeightDesc.count
 }
 
-
+appendPlayerToTeams(fromArray: sortedExperiencedPlayers)
+appendPlayerToTeams(fromArray: sortedInexperiencedPlayers)
 
 print("Sharks Players:")
 for shark in sharks {
@@ -250,10 +259,6 @@ for raptor in raptors {
 }
 print("Average height: \(averageHeight(forTeam: raptors))")
 print()
-print("Experienced Players:")
-for player in sortedExperiencedPlayers {
-    print(player)
-}
 print("Average height for experienced: \(averageHeight(forTeam: sortedExperiencedPlayers))")
 print("Average height for inexperienced: \(averageHeight(forTeam: sortedInexperiencedPlayers))")
 print("Average height for all players: \(averageHeight(forTeam: soccerPlayers))")
