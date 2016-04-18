@@ -119,11 +119,11 @@ func indexToInsertPlayer(player: [String:String], forSortedArray array: [[String
         if array.isEmpty {
             insertPlayer = true
         } else {
-            if let experiencedPlayerHeight = array[index]["heightInInches"],
-                let experiencedPlayerHeightInt = Int(experiencedPlayerHeight),
+            if let insertedPlayerHeight = array[index]["heightInInches"],
+                let insertedPlayerHeightInt = Int(insertedPlayerHeight),
                 let soccerPlayerHeight = player["heightInInches"],
                 let soccerPlayerHeightInt = Int(soccerPlayerHeight) {
-                if soccerPlayerHeightInt <= experiencedPlayerHeightInt {
+                if soccerPlayerHeightInt <= insertedPlayerHeightInt {
                     insertPlayer = true
                 } else {
                     index += 1
